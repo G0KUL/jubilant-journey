@@ -1,0 +1,22 @@
+<h3>Procedure</h3>
+<p>
+	Simulation is the demonstration of how Producer and consumer do their job of producing and consuming items. Producer can produce exactly one item at a time and adds that item to buffer iff buffer is not full. Only after adding item to buffer, producer produces another item. Once the buffer is full, producer waits for consumer to consume items.<br>
+	On the hand Consumer consumes one item at a time and removes that item from the buffer. Consumer can consume items from buffer until it becomes empty. Once the buffer is empty then consumer will wait for producer to producer the item.
+</p>
+<p>
+	Procedure is as follows:
+</p>
+
+<ol>
+	<li>Open the simulation page</li>
+	<li>There are two buttons named producer and consumer which does the job of our classical Producer and Consumer. </li>
+	<li>On click of producer button, one item will be produced and added to buffer.</li>
+	<li>On click of consumer button one item will be consumed and removed from buffer.</li>
+	<li>Buffer size is 5 so you can generate at most 5 items and consume at most 5 items.</li>
+	<li>Click on producer button to produce the items</li>
+	<li>Once producer generates 5 items then buffer becomes full and producer has to wait for consumer to perform his job.</li>
+	<li>Click on consumer button to consume the items</li>
+	<li>Once all the items are consumed, consumer cannot perform any action and has to wait for producer to produce items.</li>
+	<li>You can press producer and consumer buttons in any order</li>
+	<li>Simulation is deadlock free as producer and consumer cannot run simultaneously.</li>
+</ol>

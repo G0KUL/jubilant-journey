@@ -1,0 +1,13 @@
+<h3>Introduction</h3>
+DeadLock is a situation where a process are waiting for getting access resource which is already allocated to some
+other resource and that resource is waiting for resource whose access is held by this process. At this situation both
+the processes will prevent each other from getting access to the resource they want hence resulting in a deadlock where
+none of the process can complete execution.<br />
+Consider P<sub>1</sub> and P<sub>2</sub> are two processes.<br />
+P<sub>1</sub> requests for resource X and acquires it, P<sub>2</sub> request for resource Y and acquires it.<br />
+For further execution P<sub>1</sub> need resource Y for execution and P<sub>2</sub> need resource X for execution.<br />
+At such a situation, both the processes will wait until resource is set free. They will be remaining in wait state for
+ever and hence leading to a deadlock.<br />
+To proceed operating system won't understand what action to take.<br />
+Only way is to abort or stop one process which will release the resource, complete the second process releasing all the
+resources so that the first process can complete its execution.

@@ -1,0 +1,104 @@
+<h3>Theory</h3>
+<p>
+	In Multitasking Operating system multiple processes can be executed simultaneously and it has ability to preempt the currently running process. In order to execute multiple processes parallelly, OS should provide mechanism for Inter Process Communication(IPC).<br>
+	Lack of synchronization in IPC causes the problems like Inconsistency, Data loss, Deadlock.
+</p>
+<p>
+	Why these synchronization problems really occur? <br>	
+	They occur because of --
+	<ul>
+		<li>
+			<strong>Critical Section: </strong> Critical section is that part of the program where shared resources are accessed and non-critical section is that part of the program which does not access any shared resource. Program may have series of critical and non-critical sections.
+		</li>
+		<li>
+			<strong>Race Condition: </strong>Processes must be racing to access the Critical section and the end result will depend on the order in which the processes finish their updates.
+		</li>
+		<li>
+			<strong>Preemption: </strong> Running process will be suspended/preempted and another process will be scheduled on CPU. 
+		</li>
+	</ul>
+</p>
+
+<br>
+<p> 
+<h3>Deadlock -- waiting forever</h3>
+DeadLock is a situation where a process is waiting for getting access to a resource which is already allocated to some other process and that other process is waiting for resource whose access is held by first process. At this situation both the processes will prevent each other from getting access to the resource they want hence resulting in a deadlock where none of the process can complete execution. </p>
+
+<p> Consider P<sub>1</sub> and P<sub>2</sub> are two processes. P<sub>1</sub> requests for resource R<sub>1</sub> and acquires it, P<sub>2</sub> request for resource R<sub>2</sub> and acquires it. <br>
+
+For further execution P<sub>1</sub> need resource R<sub>2</sub> for execution and P<sub>2</sub> need resource R<sub>1</sub> for execution.<br><br>
+<img src="deadlock.jpg" />
+<p>At such a situation, both the processes will wait until resource is set free. They will remain in wait state for ever and hence leading to a deadlock.</p>
+
+<p>To proceed, operating system won't understand what action to take. Only way is to abort or stop one or more processes which will release the resource, which results in complete the execution of remaining processes releasing all the resources so that the first process can complete its execution.</p>
+
+<br>
+<p>
+	<h4>Necessary Conditions: </h4>
+	Following four conditions will hold  if deadlock is there:
+	<ul>
+		<li>
+			<strong>Mutual Exclusion: </strong> Resources are non-sharable. At a time only one process can use resource.
+		</li>
+		<li>
+			<strong>Hold and Wait: </strong>Process holds a at least one resource and waits for a resource held by another process.
+		</li>
+		<li>
+			<strong>Non Preemption: </strong>Process does not release the resource.
+		</li>
+		<li>
+			<strong>Circular Wait: </strong>A set of processes are waiting for a resource held by each other in circular form. 
+		</li>
+	</ul>
+	These 4 conditions taken together constitute necessary and sufficient conditions for deadlock
+</p>
+
+<h4>Strategies of handling deadlock</h4>
+<ul>
+	<li>
+		<strong>Deadlock Avoidance and prevention: </strong> Do not let the system go in deadlock. [Popular algo is Banker's Algo.]
+	</li>
+	<li>
+		<strong>Detection and Recovery: </strong>Let deadlock occur, then do preemption or abort the processes to handle it if occurred. [Doctor's Algorithm]
+	</li>
+	<li>
+		<strong>Deadlock Ignorance: </strong>If deadlock is very rare, then let it happen and reboot the system if it occurs. This is the approach used in today's operating systems like Windows and Linux. [Ostrich Algorithm].
+	</li>
+</ul>
+
+<h3>Dining Philosopher Porblem</h3>
+Dinning Philosopher problem is an example that is normally considered when considering about deadlock. The problem is
+about 5 philosophers. The 5 philosophers are seated around a circular table. Each of the philosopher is given with one
+chopstick. The mandatory condition is that philosophers can eat only if they has 2 chopstick. There are 3 states:
+<ol>
+    <li>Thinking</li>
+    <li>Hungry</li>
+    <li>Eating</li>
+</ol>
+Initially all philosophers are thinking. When a philosopher is hungry then he will pick the chopsticks from his left
+and right of which one is his chopstick and other from neighboring philosopher and starts eating. Now the philosopher
+whose chopstick was taken has to wait till he receives back his chopstick and also get chopstick from the other side
+before he starts eating. If all philosopher wants to eat at same time then all of them will have their chopstick and
+they will be waiting for the second chopstick. They will remain in that state for ever. This is the deadlock because no
+one can complete the task of having food and will be forever waiting to get second chopstick. In-order to solve this
+problem semaphores (variable which is used to solve critical section problem) or monitors can be used.
+<h4>Solution to DeadLock in Dinner Philosopher problem</h4>
+<ol>
+    <li>Philosopher must pick chopstick only if both left and right chopstick are available.</li>
+    <li>Only make four Philosophers to sit in circular table such that there will be one chopstick left on table. In
+        this way deadlock can be avoided.</li>
+</ol>
+
+<h3>Reference Material: </h3>
+<hr>
+<ol>
+	<li>
+		<a href="http://www.cs.rpi.edu/academics/courses/fall04/os/c10/">http://www.cs.rpi.edu/academics/courses/fall04/os/c10/</a>
+		
+	</li>
+	<li>
+		<a href="https://www.shsu.edu/~csc_tjm/cs431/Chap08TJM.html">https://www.shsu.edu/~csc_tjm/cs431/Chap08TJM.html</a>
+	</li>
+	<li>Operating System Concepts - by Silberschatz, Galvin, Gagne</li>
+</ol>
+<br>

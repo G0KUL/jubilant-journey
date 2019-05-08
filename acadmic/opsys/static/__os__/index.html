@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <title>Welcome to Virtual Labs</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"
+      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      link
+      href="https://fonts.googleapis.com/css?family=Oxygen"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Oxygen", sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container">
+      <div class="row">
+        <div
+          class="card col-xl-10 col-lg-10 col-md-10 col-sm-12 offset-xl-1 offset-lg-1 offset-md-1 bg-light"
+        >
+          <div class="card-header text-center">
+            <ul class="nav nav-tabs card-header-tabs nav-fill">
+              <li class="nav-item">
+                <button
+                  class="btn btn-outline-info nav-link active"
+                  style="width:100%"
+                  onclick="switchnav(this,'#introtab')"
+                >
+                  Introduction
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="btn btn-outline-info nav-link"
+                  style="width:100%"
+                  onclick="switchnav(this,'#simulationtab')"
+                >
+                  Simulation
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="btn btn-outline-info nav-link"
+                  style="width:100%"
+                  onclick="switchnav(this,'#targetaudtab')"
+                >
+                  Target Audience
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Card Body-->
+          <div class="card-body" id="introtab">
+            <h3>Introduction</h3>
+            Operating systems are integral part of any electronic device. All
+            electronic devices have certain way of operation. They have some
+            standard operation they can perform.<br />
+            We consider the example of a washing machine. In a washing machine
+            we have certain operations we can perform. Let 2 operations be
+            washing the cloth and drying the cloth. Now when washing machine is
+            switched on, it has certain things it does before you start to press
+            any button in it. This is normally the time taken to boot the
+            system.
+          </div>
+
+          <div class="card-body" id="simulationtab" style="display:none">
+            <h3>Simulation</h3>
+          </div>
+
+          <div class="card-body" id="targetaudtab" style="display:none">
+            <h3>Target Audience</h3>
+            The course is mainly targeted at the Undergraduate engineering
+            students of Computer Science and Engineering stream.<br /><br />
+            The course is also for anyone who is interested in studing about
+            operating systems.
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

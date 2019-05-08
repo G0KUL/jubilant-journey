@@ -1,0 +1,16 @@
+<h3>Theory</h3>
+Take two process P<sub>1</sub> and P<sub>2</sub>. P<sub>1</sub> requires
+4 seconds to execute and P<sub>2</sub> requires 3 seconds to execute. Let the quantum time
+be 2 seconds. We start the cycle with P<sub>1</sub> as the first process.<br /><br />
+<ul>
+  <li>P<sub>1</sub> Process will execute for 2 seconds which is the quantum time and then goes to
+    wait state until its next turn.</li>
+  <li>Now P<sub>2</sub> gets the turn.</li>
+  <li>P<sub>2</sub> Process will execute for 2 seconds which is the quantum time and goes to wait state until
+    its next turn.</li>
+  <li>P<sub>1</sub> Process gets back its turn and it will execute for 2 seconds
+    completing its 4 seconds of execution.</li>
+  <li>P<sub>1</sub> Process execution is now complete.</li>
+  <li>P<sub>2</sub> Process get the turn and will complete the execution of the remaining 1 second.</li>
+  <li>Hence P<sub>1</sub> and P<sub>2</sub> completed execution, we terminate the execution.</li>
+</ul>

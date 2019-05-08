@@ -1,0 +1,187 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+</style>
+
+<h3>Simulation</h3>
+<div>
+  <h3>Select the case you want to simulate ...</h3>
+  <label><input type="radio" name="case" checked>Child completes
+    execution before parent</label>
+  <label><input type="radio" name="case">Parent completes
+    execution before child</label>
+</div>
+<div><button id="simulateInput" onclick="simulation()">Simulate</button></div>
+
+<div style="padding-top:5%">
+  <canvas width="400" height="400" style="border:1px solid #000;" id="thecanvas"></canvas>
+</div>
+
+<div id="textexplain"></div>
+
+<script>
+  var i = 0;
+  var type_exec;
+
+  function simulation() {
+    if (document.getElementsByName('case')[0].checked === true) {
+      //Considering normal case
+      type_exec = 'normal';
+    } else if (document.getElementsByName('case')[1].checked === true) {
+      //Considering second case
+      type_exec = 'abnormal';
+    } else {
+      return;
+    }
+    simulate();
+  }
+
+  function simulate() {
+    var canvaspointer = document.getElementById("thecanvas").getContext("2d");
+    canvaspointer.globalCompositeOperation = "destination-over";
+    canvaspointer.clearRect(0, 0, 400, 400);
+    canvaspointer.strokeStyle = "black";
+
+    //Setting standard font
+    canvaspointer.font = "20px Oxygen";
+
+    //Starting the line drowing
+    canvaspointer.beginPath();
+
+    //Fork Method
+    canvaspointer.strokeRect(25, 175, 100, 50);
+    canvaspointer.strokeRect(25, 175, 100, 50);
+    canvaspointer.fillText("Fork()", 45, 210);
+
+    if ((i < 5)) {
+      //Parent Process
+      canvaspointer.strokeRect(200, 25, 150, 50);
+      canvaspointer.strokeRect(200, 25, 150, 50);
+      canvaspointer.fillText("Parent Process", 210, 55);
+      //Parent Address Space
+      canvaspointer.strokeRect(200, 75, 150, 100);
+      canvaspointer.strokeRect(200, 75, 150, 100);
+      canvaspointer.fillText("Parent Address", 210, 125);
+      canvaspointer.fillText("Space", 240, 150);
+    }
+
+    if (i === 0) {
+      //Parent to Fork()
+      canvaspointer.moveTo(200, 50);
+      canvaspointer.lineTo(75, 50);
+      canvaspointer.lineTo(75, 175);
+      canvaspointer.lineTo(60, 160);
+      canvaspointer.lineTo(90, 160);
+      canvaspointer.lineTo(75, 175);
+    }
+
+    if (i === 1 || i === 4) {
+      //Fork() to Parent
+      canvaspointer.moveTo(75, 175);
+      canvaspointer.lineTo(75, 50);
+      canvaspointer.lineTo(200, 50);
+      canvaspointer.lineTo(185, 35);
+      canvaspointer.lineTo(185, 65);
+      canvaspointer.lineTo(200, 50);
+    }
+
+    if (i === 2) {
+      //Parent Address Space to Fork()
+      canvaspointer.moveTo(200, 110);
+      canvaspointer.lineTo(75, 110);
+      canvaspointer.lineTo(75, 175);
+      canvaspointer.lineTo(60, 160);
+      canvaspointer.lineTo(90, 160);
+      canvaspointer.lineTo(75, 175);
+    }
+
+
+    if (i >= 3 && i < 5) {
+      //Child Process
+      canvaspointer.strokeRect(200, 225, 150, 50);
+      canvaspointer.strokeRect(200, 225, 150, 50);
+      canvaspointer.fillText("Child Process", 210, 255);
+      //Child Address Space
+      canvaspointer.strokeRect(200, 275, 150, 100);
+      canvaspointer.strokeRect(200, 275, 150, 100);
+      canvaspointer.fillText("Child Address", 210, 325);
+      canvaspointer.fillText("Space", 240, 350);
+    }
+
+    if (i === 4) {
+      //Fork() to Child
+      canvaspointer.moveTo(75, 225);
+      canvaspointer.lineTo(75, 250);
+      canvaspointer.lineTo(200, 250);
+      canvaspointer.lineTo(185, 235);
+      canvaspointer.lineTo(185, 265);
+      canvaspointer.lineTo(200, 250);
+    }
+
+    if (type_exec === 'normal') {
+      //Parent Process
+      canvaspointer.strokeRect(200, 25, 150, 50);
+      canvaspointer.strokeRect(200, 25, 150, 50);
+      canvaspointer.fillText("Parent Process", 210, 55);
+      //Parent Address Space
+      canvaspointer.strokeRect(200, 75, 150, 100);
+      canvaspointer.strokeRect(200, 75, 150, 100);
+      canvaspointer.fillText("Parent Address", 210, 125);
+      canvaspointer.fillText("Space", 240, 150);
+
+      if (i === 5) {
+        //Child to Fork()
+        canvaspointer.moveTo(200, 250);
+        canvaspointer.lineTo(75, 250);
+        canvaspointer.lineTo(75, 225);
+        canvaspointer.lineTo(60, 240);
+        canvaspointer.lineTo(90, 240);
+        canvaspointer.lineTo(75, 225);
+
+        //Child Process
+        canvaspointer.strokeRect(200, 225, 150, 50);
+        canvaspointer.strokeRect(200, 225, 150, 50);
+        canvaspointer.fillText("Child Process", 210, 255);
+
+        //Child Address Space
+        canvaspointer.strokeRect(200, 275, 150, 100);
+        canvaspointer.strokeRect(200, 275, 150, 100);
+        canvaspointer.fillText("Child Address", 210, 325);
+        canvaspointer.fillText("Space", 240, 350);
+      }
+
+      if (i === 6) {
+        //Fork() to Parent
+        canvaspointer.moveTo(75, 175);
+        canvaspointer.lineTo(75, 50);
+        canvaspointer.lineTo(200, 50);
+        canvaspointer.lineTo(185, 35);
+        canvaspointer.lineTo(185, 65);
+        canvaspointer.lineTo(200, 50);
+      }
+    }
+
+    if (i === 3) {
+      //Fork() to Child Address Space
+      canvaspointer.moveTo(75, 225);
+      canvaspointer.lineTo(75, 310);
+      canvaspointer.lineTo(200, 310);
+      canvaspointer.lineTo(185, 295);
+      canvaspointer.lineTo(185, 325);
+      canvaspointer.lineTo(200, 310);
+    }
+
+    canvaspointer.stroke();
+    setTimeout(function () {
+      i = (i + 1);
+      if (i === 7) {
+        return;
+      }
+      window.requestAnimationFrame(simulate);
+    }, 3000);
+  }
+</script>

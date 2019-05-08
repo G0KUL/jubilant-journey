@@ -1,0 +1,35 @@
+<h3>Procedure</h3>
+<p>
+	The experiment is designed only for 4 processes and 3 resource types.
+	For each process, user has to enter the number of allocated resources and then maximum number resources required by each process. Follow the below procedure.
+</p>
+<ol>
+	<!-- <li> The experiment is designed only for 4 processes and 3 resources.</li> -->
+	<li>Start the simulation page</li>
+	<li>User will see the basic information about experiment and user will be prompted for input</li>
+	<li> 
+		Enter the details all three types of resources for process P1:
+		<ul>
+			<li>There will be 6 textboxes, 3 in first row and 3 in second row </li>
+			<li>In first 3 textboxes enter the number of resources aquired by process P1</li>
+			<li>In next 3 textboxes enter the maximum number of resources required by process of each type</li>
+			<li>Click on Submit button</li>
+		</ul>
+	</li>
+	<!-- <li> Enter the details of maximum resources required by process P1(allocated + need).</li> -->
+	<!-- <li> Click on Submit button.</li> -->
+	<li> Repeat step 3 for remaining 3 processes.</li>
+	<li> Enter the details of number of available resources which are not allocated to any process.(available)</li>
+	<li> Click submit button</li>
+	<li> Area below 'Next' button will show you details of every action in details and table will show you up to date values of every action.</li>
+	<li> Press the Next button to execute the next step. Observer the output of every step as mentioned above.</li>
+	<li>Keep pressing Next button for execution of every step.</li>
+</ol>
+<h4>How simulation works:</h4>
+<ul>
+	<li>In the beginning of simulation, user has to enter the input values.</li>
+	<li> Once the all input values are entered then initial need of every process will be calculated.</li>
+	<li>Then Banker's algorithm is applied to find out if safe sequence exist</li>
+	<li> Processes are checked repeatedly if they can be completed with the present available. <br> (meaning in order: Process 1 -> Process 2 -> Process 3 -> Process 4 -> Process 5 -> Process 1 ... and so on until all processes are executed or need of remaining processes is not satisfiable with available resources).</li>
+	<li>Finally algorithm will output as 'all processes are executed' or 'system is not in safe state'</li>
+</ul>

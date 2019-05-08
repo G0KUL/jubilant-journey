@@ -1,0 +1,40 @@
+<h3>Theory</h3>
+Prerequisite: Deadlock experiment. </br><br>
+Banker's Algorithm is mainly used for deadlock avoidance. There are four main factors:
+<ul>
+    <li><strong>Allocation:</strong> Allocation is the array representing how many instances of each resource is allocated or already taken
+        by the process.</li>
+    <li><strong> Maximum: </strong> Maximum is the array representing how many instances of each resource is required for the process to execute.</li>
+    <li><strong>Need: </strong> Need is the array representing how many instances of each resource is required after the processes has taken up some instances as per allocated array.</li>
+    <li><strong>Available: </strong> Available is the array representing how many instances of each resource is available which process can request and get permission to use.</li>
+</ul>
+<p>Initially when a new process enters a system, it will declare the maximum instances of each resource that is required
+for its execution. The process gets some of the available instances of each processes. The algorithm is applied on a
+set of these kind of processes.</p>
+
+The algorithm is as follows:<br /><br />
+
+We have the <strong> maximum and allocated </strong>array given for each process in the set of processes. Now we need to find <strong>available </strong> array. If the value of <strong> available</strong> is given then we can directly use it else we need to calculate it. To calculate, we need to have the count of the maximum instances of each resource that the system has. Then we need to subtract the maximum number of instances of a resource from the sum of all the instances of the resources allocated by processes.<br /><br />
+
+Then we start with calculation of <strong> need </strong> array. We calculate need for each of the resource as :<br />
+
+<strong> Need = maximum - Available   </strong>	<br />
+
+When we have completed the calculation of the <strong> need </strong> for each resource and for each and every process, we compute the safe sequence for execution of the process.<br /><br />
+
+To check whether a process can be executed; selected from the set of ready to execute processes in the system, we apply the following set of equations.
+<ol>
+    <li>Work = Available</li>
+    <li>Need &lt;= Work</li>
+    <li>Work = Work + Allocation</li>
+</ol>
+<br />
+We continue this with the processes in the set of processes as long as either of the two situations arises.
+<dl>
+    <dt>Case 1</dt>
+    <dd>All the processes have completed their execution.</dd>
+    <dt>Case 2</dt>
+    <dd>Need &gt; Available ; for all processes in the set of remaining processes</dd>
+</dl>
+
+If the case is Case 1, then we get the safe sequence of execution but if the case is Case 2, then the system is not in safe state. </br><br>

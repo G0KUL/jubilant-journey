@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student + TA</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/basic.css' %}">
+
+
+  </head>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+            <img class="nav navbar-nav navbar-left" alt="CSE Logo" height="42" width="42" style="margin-top: 7px;" src="static/css/CSElogo2_144.png">
+
+          <h3 class="navbar-text">&nbsp;Student + TA Page</h3>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right"></ul>
+          <p class="navbar-text navbar-right">Welcome <strong>{{ request.session.username }}</strong>, <a style="color: rgb(255,255,130)" href="{% url 'login' %}">Log Out</a></p>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">View Marks</a></li>
+            <li><a href="#">View Courses</a></li>
+            <li><a href="#">Assign Lab Marks</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h2 class="page-header">Welcome</h2>
+          <p>Kindly click on link in side panel to view your marks</p>
+
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

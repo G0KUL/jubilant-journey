@@ -1,0 +1,454 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+
+  table,
+  td,
+  th {
+    text-align: center;
+    padding: 5px;
+    border-collapse: collapse;
+  }
+</style>
+
+<h3>Simulation</h3>
+<div>
+  <div>
+    <label>Scheduling Algorithm : </label>
+    <select id="algorithm_select" onchange="select_algorithm()">
+      <option>Select an Algorithm</option>
+      <option value="fcfs">First Come First Serve</option>
+      <option value="sjf">Shortest Job First</option>
+      <option value="srtf">Shortest Remaining Job First</option>
+      <option value="rrs">Round Robin Scheduling</option>
+      <option value="pbs">Priority Based Scheduling (Non Preemptive)</option>
+    </select>
+  </div>
+  <br />
+  <div style="display:none" id="no_of_processes_block">
+    <label>Number of processes : </label>
+    <input type="number" placeholder="Enter the number of processes" required onkeyup="check_number_of_processes()" id="noofprocesses" />
+    <span id="count_alert"></span>
+  </div>
+  <br />
+  <div id="table_block"></div>
+  <br />
+  <div style="display:none" id="qtime_block">
+    <label>Quantum Time : </label>
+    <input type="number" id="qtime" placeholder="Enter the Quantum Time" required />
+  </div>
+  <br />
+  <button id="simulate_trigger" onclick="simulateaction()" disabled>
+    Simulate</button><br />
+  <button id="next_trigger" onclick="nextaction()" disabled>Next</button>
+  <br /><br />
+  <div id="output_block"></div><br />
+</div>
+
+<script>
+  var number_of_processes,
+    selected_algorithm,
+    priority,
+    at,
+    bt,
+    ct,
+    tat,
+    wt,
+    qtime,
+    output_table,
+    elapsedtime,
+    rt,
+    k;
+
+  function array_function(n, value) {
+    var x = new Array(n);
+    for (var i = 0; i < n; i++) x[i] = value;
+    return x;
+  }
+
+  function select_algorithm() {
+    selected_algorithm = $("#algorithm_select")
+      .find(":selected")
+      .val();
+    $("#algorithm_select").prop("disabled", true);
+    $("#no_of_processes_block").css("display", "block");
+  }
+
+  function display_create_table() {
+    var text = "<table border='2'><tr><th>Process</th>";
+    if (
+      selected_algorithm === "sjf" ||
+      selected_algorithm === "fcfs" ||
+      selected_algorithm === "srtf"
+    ) {
+      text += "<th>Arrival Time</th>";
+    } else if (selected_algorithm === "pbs") {
+      text += "<th>Priority</th><th>Arrival Time</th>";
+    }
+    text +=
+      "<th>Burst Time</th><th>Finish Time</th><th>Turn Around Time</th><th>Wait Time</th></tr>";
+    for (var i = 0; i < bt.length; i++) {
+      text += "<tr><th>Process " + (i + 1) + "</th>";
+      if (
+        selected_algorithm === "sjf" ||
+        selected_algorithm === "fcfs" ||
+        selected_algorithm === "srtf"
+      ) {
+        text +=
+          "<th><input type='number' id='arrival" +
+          i +
+          "' value='" +
+          at[i] +
+          "'/></th>";
+      } else if (selected_algorithm === "pbs") {
+        text +=
+          "<th><input type='number' id='priority" +
+          i +
+          "' value='" +
+          priority[i] +
+          "' /></th><th><input type='number' id='arrival" +
+          i +
+          "' value='" +
+          at[i] +
+          "' /></th>";
+      }
+      text +=
+        "<th><input type='number' id='burst" +
+        i +
+        "' value='" +
+        bt[i] +
+        "'/></th><th>" +
+        ct[i] +
+        "</th><th>" +
+        tat[i] +
+        "</th><th>" +
+        wt[i] +
+        "</th></tr>";
+    }
+    text += "</table>";
+    $("#table_block").html(text);
+  }
+
+  function display_table() {
+    var text = "<table border='2'><tr><th>Process</th>";
+    if (
+      selected_algorithm === "sjf" ||
+      selected_algorithm === "fcfs" ||
+      selected_algorithm === "srtf"
+    ) {
+      text += "<th>Arrival Time</th>";
+    } else if (selected_algorithm === "pbs") {
+      text += "<th>Priority</th><th>Arrival Time</th>";
+    }
+    text +=
+      "<th>Burst Time</th><th>Remaining Time</th><th>Finish Time</th><th>Turn Around Time</th><th>Wait Time</th></tr>";
+    for (var i = 0; i < bt.length; i++) {
+      text += "<tr><th>Process " + (i + 1) + "</th>";
+      if (
+        selected_algorithm === "sjf" ||
+        selected_algorithm === "fcfs" ||
+        selected_algorithm === "srtf"
+      ) {
+        text += "<th>" + at[i] + "</th>";
+      } else if (selected_algorithm === "pbs") {
+        text += "<th>" + priority[i] + "</th><th>" + at[i] + "</th>";
+      }
+      text +=
+        "<th>" +
+        bt[i] +
+        "</th><th>" +
+        rt[i] +
+        "</th><th>" +
+        ct[i] +
+        "</th><th>" +
+        tat[i] +
+        "</th><th>" +
+        wt[i] +
+        "</th></tr>";
+    }
+    text += "</table>";
+    $("#table_block").html(text);
+    if (output_table.length > 0) {
+      text =
+        "<table border='2'><tr><th>From Time</th><th>To Time</th><th>Process</th><tr/>";
+      for (var i = 0; i < output_table.length; i++)
+        text +=
+        "<tr><th>" +
+        output_table[i][0] +
+        "</th><th>" +
+        output_table[i][1] +
+        "</th><th>" +
+        output_table[i][2] +
+        "</th><tr />";
+      text += "</table>";
+      $("#output_block").html(text);
+    }
+  }
+
+  function reset_simulation() {
+    $("#algorithm_select").prop("disabled", false);
+    $("#simulate_trigger").prop("disabled", true);
+    $("#noofprocesses").prop("disabled", false);
+    $("#no_of_processes_block").css("display", "none");
+    $("#table_block").html("<br/>");
+    $("#output_block").html("<br />");
+    $("#qtime_block").css("display", "none");
+    $("#next_trigger").prop("disabled", true);
+    $("#simulate_trigger").removeProp("disabled");
+    alert("Successfully completed execution. Returning to previous state.");
+  }
+
+  function check_number_of_processes() {
+    number_of_processes = $("#noofprocesses").val();
+    if (number_of_processes <= 1 || number_of_processes >= 7) {
+      $("#count_alert").html("Enter a value between 2 and 6");
+    } else {
+      $("#count_alert").html("Selected");
+      if (selected_algorithm === "pbs")
+        priority = array_function(number_of_processes, 1);
+      at = array_function(number_of_processes, 0);
+      bt = array_function(number_of_processes, 0);
+      rt = array_function(number_of_processes, 0);
+      ct = array_function(number_of_processes, "Not Calculated");
+      tat = array_function(number_of_processes, "Not Calculated");
+      wt = array_function(number_of_processes, "Not Calculated");
+      output_table = [];
+      display_create_table();
+      if (selected_algorithm === "rrs") {
+        $("#qtime_block").css("display", "block");
+        $("#qtime").prop("disabled", false);
+      }
+      $("#simulate_trigger").prop("disabled", false);
+      $("#noofprocesses").prop("disabled", true);
+    }
+  }
+
+  function simulateaction() {
+    $("#next_trigger").prop("disabled", false);
+    $("#simulate_trigger").prop("disabled", true);
+
+    for (var i = 0; i < bt.length; i++) {
+      if (
+        selected_algorithm === "sjf" ||
+        selected_algorithm === "fcfs" ||
+        selected_algorithm === "srtf"
+      ) {
+        at[i] = Number($("#arrival" + i).val());
+      } else if (selected_algorithm === "pbs") {
+        priority[i] = Number($("#priority" + i).val());
+        at[i] = Number($("#arrival" + i).val());
+      }
+      bt[i] = Number($("#burst" + i).val());
+      rt[i] = bt[i];
+      if (rt[i] === 0) {
+        ct[i] = tat[i] = wt[i] = 0;
+      }
+    }
+    if (selected_algorithm === "rrs") {
+      $("#qtime").prop("disabled", true);
+      qtime = Number($("#qtime").val());
+    }
+    elapsedtime = 0;
+    k = 0;
+    display_table();
+  }
+
+  function nextaction() {
+    if (selected_algorithm === "fcfs") {
+      // FCFS
+      var previous_et = elapsedtime;
+      var min = Number.MAX_SAFE_INTEGER;
+      var pos = -1;
+      for (var i = 0; i < at.length; i++) {
+        if (rt[i] > 0) {
+          if (at[i] < min) {
+            pos = i;
+            min = at[i];
+          }
+        }
+      }
+      if (pos !== -1) {
+        if (elapsedtime < at[pos]) {
+          output_table.push([previous_et, at[pos], "No Process"]);
+          previous_et = elapsedtime = at[pos];
+        }
+        elapsedtime += rt[pos];
+        rt[pos] = 0;
+        ct[pos] = elapsedtime;
+        tat[pos] = ct[pos] - at[pos];
+        wt[pos] = tat[pos] - bt[pos];
+        output_table.push([previous_et, elapsedtime, "Process " + (pos + 1)]);
+      } else {
+        reset_simulation();
+        return;
+      }
+      display_table();
+    } else if (selected_algorithm === "sjf") {
+      // SJF
+      var previous_et = elapsedtime;
+      var min = Number.MAX_SAFE_INTEGER;
+      var pos = -1;
+      var remain = 0;
+      for (var i = 0; i < at.length; i++) {
+        if (rt[i] > 0) {
+          remain++;
+          if (rt[i] < min && at[i] <= elapsedtime) {
+            pos = i;
+            min = rt[i];
+          }
+        }
+      }
+      if (pos !== -1) {
+        elapsedtime += rt[pos];
+        rt[pos] = 0;
+        ct[pos] = elapsedtime;
+        tat[pos] = ct[pos] - at[pos];
+        wt[pos] = tat[pos] - bt[pos];
+        output_table.push([previous_et, elapsedtime, "Process " + (pos + 1)]);
+      } else if (remain > 0) {
+        min = Number.MAX_SAFE_INTEGER;
+        pos = -1;
+        for (var i = 0; i < at.length; i++) {
+          if (rt[i] > 0) {
+            if (at[i] < min) {
+              pos = i;
+              min = at[i];
+            }
+          }
+        }
+        elapsedtime = min;
+        output_table.push([previous_et, elapsedtime, "No Process"]);
+      } else {
+        reset_simulation();
+        return;
+      }
+      display_table();
+    } else if (selected_algorithm === "srtf") {
+      // SRTF
+      var previous_et = elapsedtime;
+      var min = Number.MAX_SAFE_INTEGER;
+      var pos = -1;
+      var remain = 0;
+      for (var i = 0; i < at.length; i++) {
+        if (rt[i] > 0) {
+          remain++;
+          if (rt[i] < min && at[i] <= elapsedtime) {
+            pos = i;
+            min = rt[i];
+          }
+        }
+      }
+      if (pos !== -1) {
+        elapsedtime += 1;
+        rt[pos] -= 1;
+        if (rt[pos] === 0) {
+          ct[pos] = elapsedtime;
+          tat[pos] = ct[pos] - at[pos];
+          wt[pos] = tat[pos] - bt[pos];
+        }
+        output_table.push([previous_et, elapsedtime, "Process " + (pos + 1)]);
+        if (output_table.length >= 2) {
+          var temp_2 = output_table.pop();
+          var temp_1 = output_table.pop();
+          if (temp_1[2] === temp_2[2]) {
+            output_table.push([temp_1[0], temp_2[1], temp_1[2]]);
+          } else {
+            output_table.push(temp_1);
+            output_table.push(temp_2);
+          }
+        }
+      } else if (remain > 0) {
+        min = Number.MAX_SAFE_INTEGER;
+        pos = -1;
+        for (var i = 0; i < at.length; i++) {
+          if (rt[i] > 0) {
+            if (at[i] < min) {
+              pos = i;
+              min = at[i];
+            }
+          }
+        }
+        elapsedtime = min;
+        output_table.push([previous_et, elapsedtime, "No Process"]);
+      } else {
+        reset_simulation();
+        return;
+      }
+      display_table();
+    } else if (selected_algorithm === "rrs") {
+      // RRS
+      var previous_et = elapsedtime;
+      var remain = 0;
+      for (var i = 0; i < at.length; i++) {
+        if (rt[i] > 0) {
+          remain++;
+        }
+      }
+      if (remain > 0) {
+        while (rt[k] === 0) {
+          k = (k + 1) % rt.length;
+        }
+        if (qtime >= rt[k]) {
+          elapsedtime += rt[k];
+          rt[k] = 0;
+          ct[k] = elapsedtime;
+          tat[k] = ct[k];
+          wt[k] = ct[k] - bt[k];
+        } else {
+          elapsedtime += qtime;
+          rt[k] -= qtime;
+        }
+        output_table.push([previous_et, elapsedtime, "Process " + (k + 1)]);
+        k = (k + 1) % rt.length;
+        display_table();
+      } else {
+        reset_simulation();
+        return;
+      }
+    } else if (selected_algorithm === "pbs") {
+      // PBS
+      var previous_et = elapsedtime;
+      var max = 0;
+      var pos = -1;
+      var remain = 0;
+      for (var i = 0; i < at.length; i++) {
+        if (rt[i] > 0) {
+          remain++;
+          if (priority[i] > max && at[i] <= elapsedtime) {
+            pos = i;
+            max = priority[i];
+          }
+        }
+      }
+      if (pos !== -1) {
+        elapsedtime += rt[pos];
+        rt[pos] = 0;
+        ct[pos] = elapsedtime;
+        tat[pos] = ct[pos] - at[pos];
+        wt[pos] = tat[pos] - bt[pos];
+        output_table.push([previous_et, elapsedtime, "Process " + (pos + 1)]);
+      } else if (remain > 0) {
+        min = Number.MAX_SAFE_INTEGER;
+        pos = -1;
+        for (var i = 0; i < at.length; i++) {
+          if (rt[i] > 0) {
+            if (at[i] < min) {
+              pos = i;
+              min = at[i];
+            }
+          }
+        }
+        elapsedtime = min;
+        output_table.push([previous_et, elapsedtime, "No Process"]);
+      } else {
+        reset_simulation();
+        return;
+      }
+      display_table();
+    }
+  }
+</script>

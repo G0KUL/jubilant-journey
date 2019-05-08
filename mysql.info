@@ -1,0 +1,6 @@
+$ systemctl disable/enable mysql -- boot up program disabling
+
+$ sudo /etc/init.d/mysql stop
+
+$ systemctl status/start/stop/restart mysql
+$ service mysql status/start/stop/restart

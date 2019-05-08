@@ -1,0 +1,200 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+          font-family: "Oxygen", sans-serif;
+        }
+</style>
+
+
+
+<h3>Simulation</h3>
+<div>
+  <div>
+    <label>Process 1</label>
+    <input type="number" id="p1Input" placeholder="Enter the Burst Time of Process 1" required />
+  </div>
+  <div>
+    <label>Process 2</label>
+    <input type="number" id="p2Input" placeholder="Enter the Burst Time of Process 2" required />
+  </div>
+  <div>
+    <label>Quantum Time</label>
+    <input type="number" id="qtimeInput" placeholder="Enter the Quantum Time" required />
+  </div>
+  <button id="simulateInput" onclick="simulate()">
+    Simulate</button><br />
+  <button id="nextInput" onclick="nextaction()" disabled>
+    Next</button><br />
+</div>
+
+<div style="padding-top:5%">
+  <canvas width="525" height="575" style="border:1px solid #000;" id="thecanvas"></canvas>
+</div>
+</div>
+<script>
+  var p1, p2, quantumtime, p1blocks, p2blocks, lensecond, selectprocess, ganttblocks, p1ptr, p2ptr;
+
+  function simulate() {
+    p1 = Number($("#p1Input").val());
+    p2 = Number($("#p2Input").val());
+    quantumtime = Number($("#qtimeInput").val());
+    $("#p1Input").prop('disabled', true);
+    $("#p2Input").prop('disabled', true);
+    $("#qtimeInput").prop('disabled', true);
+    $("#nextInput").prop('disabled', false);
+
+    //Calculate length of one second
+    lensecond = 400 / (p1 + p2);
+
+    //Draw the chart
+    window.requestAnimationFrame(draw);
+
+    //Array for whether completed or not
+    p1blocks = [];
+    p2blocks = [];
+
+    var j = 1;
+    for (var i = 0; i < p1; i = i + quantumtime, j++) {
+      var temp = [];
+      temp.push(j);
+      if (i + quantumtime >= p1)
+        temp.push(p1 - i);
+      else
+        temp.push(quantumtime);
+      p1blocks.push(temp);
+    }
+
+    for (var i = 0; i < p2; i = i + quantumtime, j++) {
+      var temp = [];
+      temp.push(j);
+      if (i + quantumtime >= p2)
+        temp.push(p2 - i);
+      else
+        temp.push(quantumtime);
+      p2blocks.push(temp);
+    }
+
+    selectprocess = 0;
+    ganttblocks = [];
+    p1ptr = 0;
+    p2ptr = 0;
+  }
+
+  function nextaction() {
+    if (p1ptr === p1blocks.length && p2ptr === p2blocks.length) {
+      $("#p1Input").prop('disabled', false);
+      $("#p2Input").prop('disabled', false);
+      $("#qtimeInput").prop('disabled', false);
+      $("#nextInput").prop('disabled', true);
+      return;
+    } else if (p1ptr === p1blocks.length) {
+      selectprocess = 1;
+    } else if (p2ptr === p2blocks.length) {
+      selectprocess = 0;
+    }
+    var temp;
+    if (selectprocess === 0) {
+      temp = p1blocks[p1ptr];
+      p1ptr++;
+    } else if (selectprocess === 1) {
+      temp = p2blocks[p2ptr];
+      p2ptr++;
+    }
+    ganttblocks.push(temp);
+    selectprocess = (selectprocess + 1) % 2;
+    window.requestAnimationFrame(draw);
+  }
+
+  function draw() {
+    var canvaspointer = document
+      .getElementById("thecanvas")
+      .getContext("2d");
+    canvaspointer.globalCompositeOperation = "destination-over";
+    canvaspointer.clearRect(0, 0, 525, 575);
+
+    //Setting standard font
+    canvaspointer.font = "30px Oxygen";
+
+    //Blocks within Gantt Chart
+    var i = 0,
+      j, temp;
+    temp = [-1, -1];
+    for (var k = 0; k < ganttblocks.length; k++) {
+      temp = ganttblocks[k];
+      canvaspointer.fillText("B" + temp[0], 20 + (0.2 * lensecond) + (i * lensecond), 85);
+      if ((k + 1) === ganttblocks.length) {
+        canvaspointer.fillText('B' + temp[0] + ' is moved from process ' + (((selectprocess + 1) % 2) + 1), 20, 350);
+        canvaspointer.fillText(temp[1] + 's added to Gantt chart', 20, 400);
+        canvaspointer.fillStyle = "#00FF00";
+        canvaspointer.fillRect(20 + (i *
+          lensecond), 50, temp[1] * lensecond, 50);
+        canvaspointer.fillStyle = "#000000";
+      }
+      canvaspointer.strokeRect(20 + (i * lensecond), 50, temp[1] * lensecond, 50);
+      i = i + temp[1];
+      canvaspointer.stroke();
+    }
+    //Gantt Chart
+    canvaspointer.strokeRect(20, 50, 400, 50);
+    canvaspointer.stroke();
+
+    //Dividing Process 1
+    i = 0;
+    j = 1;
+    while (i < p1) {
+      canvaspointer.fillText("B" + j, 20 + (0.2 * lensecond) + (i * lensecond), 185);
+      if (i + quantumtime >= p1) {
+        if (j === temp[0]) {
+          canvaspointer.fillStyle = "#00FF00";
+          canvaspointer.fillRect(20 + (i * lensecond), 150, (p1 - i) * lensecond, 50);
+          canvaspointer.fillStyle = "#000000";
+        }
+        canvaspointer.strokeRect(20 + (i * lensecond), 150, (p1 - i) * lensecond, 50);
+      } else {
+        if (j === temp[0]) {
+          canvaspointer.fillStyle = "#00FF00";
+          canvaspointer.fillRect(20 + (i * lensecond), 150, quantumtime * lensecond, 50);
+          canvaspointer.fillStyle = "#000000";
+        }
+        canvaspointer.strokeRect(20 + (i * lensecond), 150, quantumtime * lensecond, 50);
+      }
+      j = j + 1;
+      i = i + quantumtime;
+      canvaspointer.stroke();
+    }
+    //Process 1
+    canvaspointer.strokeRect(20, 150, lensecond * p1, 50);
+    canvaspointer.stroke();
+
+    //Dividing Process 2
+    i = 0;
+    while (i < p2) {
+      canvaspointer.fillText("B" + j, 20 + (0.2 * lensecond) + (i * lensecond), 285);
+      if (i + quantumtime >= p2) {
+        if (j === temp[0]) {
+          canvaspointer.fillStyle = "#00FF00";
+          canvaspointer.fillRect(20 + (i * lensecond), 250, (p2 - i) * lensecond, 50);
+          canvaspointer.fillStyle = "#000000";
+        }
+        canvaspointer.strokeRect(20 + (i * lensecond), 250, (p2 - i) * lensecond, 50);
+      } else {
+        if (j === temp[0]) {
+          canvaspointer.fillStyle = "#00FF00";
+          canvaspointer.fillRect(20 + (i * lensecond), 250, quantumtime * lensecond, 50);
+          canvaspointer.fillStyle = "#000000";
+        }
+        canvaspointer.strokeRect(20 + (i * lensecond), 250, quantumtime * lensecond, 50);
+      }
+      j = j + 1;
+      i = i + quantumtime;
+      canvaspointer.stroke();
+    }
+    //Process 2
+    canvaspointer.strokeRect(20, 250, lensecond * p2, 50);
+    canvaspointer.stroke();
+
+    window.requestAnimationFrame(draw);
+  }
+</script>

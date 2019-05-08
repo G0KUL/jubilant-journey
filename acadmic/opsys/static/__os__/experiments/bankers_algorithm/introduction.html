@@ -1,0 +1,20 @@
+<h3>Introduction</h3>
+Banker's Algorithm is mainly used for deadlock avoidance while allocation maximum amount of
+resources to safe state. There are four main factors:
+<dl>
+    <dt>Allocation</dt>
+    <dd>Alloction is the array representing how many instances of each resource is allocated or already taken
+        by the process.</dd>
+    <dt>Maximum</dt>
+    <dd>Maximum is the array representing how many instances of each resource is required for the process to
+        execute.</dd>
+    <dt>Need</dt>
+    <dd>Need is the array representing how many instances of each resoruce is required after the processes has
+        taken up some instances as per allocated array.</dd>
+    <dt>Available</dt>
+    <dd>Available is the array representing how many instances of each resource is available which process can
+        request and get permission to use.</dd>
+</dl>
+Initially when a new process enters a system, it will declare the maximum instances of each resource that is required
+for its execution. The process gets some of the available instances of each processes. The algorithm is applied on a
+set of these kind of processes.

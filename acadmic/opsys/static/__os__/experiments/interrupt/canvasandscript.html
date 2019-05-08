@@ -1,0 +1,140 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+</style>
+
+<h3>Simulation</h3>
+<button onclick="next()">Next</button>
+<div id="withcanvas">
+  <canvas id="mycanvas" width="500" height="400" style="border:1px solid #000000;"></canvas>
+</div>
+<script>
+  var i = 1;
+
+  window.onload = function () {
+    requestAnimationFrame(display);
+  }
+
+  function next() {
+    if (i < 9) i++;
+    requestAnimationFrame(display);
+  }
+
+  function display() {
+    var mycanvas = document.getElementById("mycanvas");
+    var canvaspointer = mycanvas.getContext("2d");
+    canvaspointer.clearRect(0, 0, 500, 400);
+    canvaspointer.font = "20px Arial";
+
+    if (i > 1) {
+      //Process
+      canvaspointer.beginPath();
+      canvaspointer.rect(20, 100, 100, 30);
+      canvaspointer.fillText("Process", 30, 120);
+      canvaspointer.stroke();
+    }
+
+    if (i > 4) {
+      //Process under Interrupt
+      canvaspointer.beginPath();
+      canvaspointer.rect(180, 40, 100, 30);
+      // canvaspointer.fillText("Wait state", 190, 30);
+      canvaspointer.fillText("Interrupt", 190, 60);
+      canvaspointer.stroke();
+    }
+
+    if (i > 7) {
+      //Process release from Interrupt
+      canvaspointer.beginPath();
+      canvaspointer.rect(340, 100, 100, 30);
+      canvaspointer.fillText("Process", 350, 120);
+      canvaspointer.stroke();
+    }
+
+    if (i > 3) {
+      //Curve when Interrupt occurs
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(120, 115);
+      canvaspointer.bezierCurveTo(150, 115, 150, 55, 180, 55);
+      canvaspointer.stroke();
+    }
+
+    if (i > 5) {
+      //Curve when Interrupt released
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(340, 115);
+      canvaspointer.bezierCurveTo(305, 115, 305, 55, 280, 55);
+      canvaspointer.stroke();
+    }
+
+    if (i > 2) {
+      //When Interrupt occurs to processor
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(130, 115);
+      canvaspointer.lineTo(130, 150);
+      canvaspointer.fillText("Interrupt Occurs", 100, 170);
+      canvaspointer.stroke();
+
+      //Drawing arrow to indicate interrupt
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(130, 115);
+      canvaspointer.lineTo(125, 125);
+      canvaspointer.lineTo(135, 125);
+      canvaspointer.lineTo(130, 115);
+      canvaspointer.fill();
+      canvaspointer.stroke();
+    }
+
+    if (i > 6) {
+      //When Interrupt occurs to processor
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(330, 115);
+      canvaspointer.lineTo(330, 150);
+      canvaspointer.fillText("After Interrupt", 300, 170);
+      canvaspointer.stroke();
+
+      //Drawing arrow to indicate interrupt
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(330, 115);
+      canvaspointer.lineTo(325, 125);
+      canvaspointer.lineTo(335, 125);
+      canvaspointer.lineTo(330, 115);
+      canvaspointer.fill();
+      canvaspointer.stroke();
+    }
+
+    // To Display the wordings
+    switch (i) {
+      case 2:
+        canvaspointer.fillText("Process is executing", 10, 300);
+        break;
+      case 3:
+        canvaspointer.fillText("Interrupt is occured due to other request", 10, 300);
+        break;
+      case 4:
+        canvaspointer.fillText(
+          "Saves the state of process and PC points to interrupt", 10, 300);
+        break;
+      case 5:
+        canvaspointer.fillText(
+          "Interrupt is being executed and process is waiting", 10, 300);
+        break;
+      case 6:
+        canvaspointer.fillText("Interrupt is completed", 10, 300);
+        break;
+      case 7:
+        canvaspointer.fillText("Saved state of process is restored and", 10, 300);
+        canvaspointer.fillText("PC points to process", 10, 320);
+        break;
+      case 8:
+        canvaspointer.fillText("Process return to running state", 10, 300);
+        break;
+      case 9:
+        canvaspointer.fillText("Simulation is Complete", 10, 300);
+    }
+  }
+</script>

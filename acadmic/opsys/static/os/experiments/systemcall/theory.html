@@ -1,0 +1,170 @@
+<h3>Theory</h3>
+
+<p>A system call is basically a way to call for services of the operating system. System calls are the interface between a process and an operating system. System calls are usually invoked when a process in user mode requires access to a resource. Then it requests the kernel to provide the resource via a system call.</p>
+<p>Following figure shows the execution of the system call:</p>
+<img src="systemcalls.png" alt="System Calls">
+<p>As shown in the diagram, the processes execute normally in the user mode until a system call interrupts it. Then the system call is executed on a priority basis in the kernel mode. After the execution of the system call, the control returns to the user mode and execution of user processes continues.</p>
+
+<p>In general, system calls are required in the following situations:</p>
+<ul>
+	<li>If a file system requires the creation or deletion of files. Reading and writing from files also require a system call.</li>
+	<li>Creation and management of new processes.</li>
+	<li>Network connections also require system calls. This includes sending and receiving packets.</li>
+	<li>Access to a hardware devices such as a printer, scanner etc. requires a system call.</li>
+
+</ul>
+
+<h3>User mode:</h3>
+<p>
+	When the computer system run user application like creating a text document or using any application program, then the system is in user mode. When the user application requests for a service from the operating system or an interrupt occurs or system call, then there there will be a transition from user to kernel mode to fulfill the requests.
+</p>
+
+<h3>Kernel Mode:</h3>
+<p>
+	When system boots then hardware starts in kernel mode and when operating system is loaded then it starts user application in user mode. To provide protection to the hardware, we have privileged instructions which execute only in kernel mode. If user attempt to run privileged instruction in user mode then it will treat instruction as illegal and traps to OS. Some of the privileged instructions are:
+	<ul>
+		<li>Handling Interrupts</li>
+		<li>To switch from user mode to kernel mode.</li>
+		<li>Input Output management.</li>
+	</ul>
+</p>
+
+<h3>Types of System Calls with examples in Windows and Unix</h3>
+
+<table border="1" cellpadding="4" cellspacing="0">
+    <tbody>
+    	<tr>
+    		<th>Types of System Calls</th>
+    		<th>Windows</th>
+			<th>Linux</th>
+    	</tr>
+    
+	    <tr>
+		    <td>Process Control</td>
+		    <td>CreateProcess()<br>ExitProcess()<br>WaitForSingleObject()<br></td>
+		    <td>fork()<br>exit()<br>wait()</td>
+	    </tr>
+	    <tr>
+		    <td>File Management</td>
+		    <td>CreateFile()<br>ReadFile()<br>WriteFile()<br>CloseHandle()</td>
+			<td><p>open()<br>read()<br>write()<br>close()</td>
+	    </tr>
+	    
+	    <tr>
+		    <td>Device Management</td>
+		    <td>SetConsoleMode()<br>ReadConsole()<br>WriteConsole()</td>
+			<td>ioctl()<br>read()<br>write()</td>
+	    </tr>
+		
+		<tr>
+		    <td>Information Maintenance</td>
+		    <td>GetCurrentProcessID()<br>SetTimer()<br>Sleep()</td>
+		    <td>getpid()<br>alarm()<br>sleep()</td>
+	    </tr>
+		
+		<tr>
+		    <td>Communication</td>
+		    <td>CreatePipe()<br>CreateFileMapping()<br>MapViewOfFile()</td>
+		    <td>pipe()<br>shmget()<br>mmap()</td>
+	    </tr>
+	</tbody>
+</table>
+<p>
+		<strong>Process Control : </strong>Used for process creation, termination, execution etc. Ex.
+		<ul>
+			<li>
+				fork(): fork() is a system call that is used to create a new process in the system. By using fork(), a program in Unix can create an image of itself as another process as we will see in separate experiment named "forking".
+			</li>
+			<li>
+				exit(): The exit() system call terminates the calling process "immediately". Any open file descriptors belonging to the process are closed; any children of the process are inherited by process 1, init, and the process's parent is sent a SIGCHLD signal.
+
+			</li>
+			<li>
+				wait(): This system calls is used to wait for state changes in a child of the calling process, and obtain information about the child whose state has changed. A state change is considered to be: the child terminated; the child was stopped by a signal; or the child was resumed by a signal. In the case of a terminated child, performing a wait allows the system to release the resources associated with the child; if a wait is not performed, then terminated the child remains in a "zombie" state.
+			</li>
+		</ul>
+	</p>
+	<p>
+		<strong>File Management : </strong>Used to manage the file IO such as creating a file, reading a file, writing into a file, etc
+	</p>
+	<p>
+		<strong>Device Management : </strong>Responsible for device manipulation such as reading from device buffers, writing into device buffers, etc
+	</p>
+	<p>
+		<strong>Information Maintenance : </strong>These system calls handle information and its transfer between the OS and the user program.
+	</p>
+	<p>
+		<strong>Communication : </strong>They deal with creating and deleting a communication connection.
+	</p>
+<p>
+	System calls are mostly accessed by programs via a high-level Application Program Interface (API) rather than  direct system call use. Three most common APIs are Win32 API for Windows, POSIX API for POSIX-based systems (Linux, Mac OS X, etc), and Java API for the Java virtual machine (JVM).
+</p>
+</ol>
+<hr>
+	<h3>Fork()</h3>
+<p>
+	The fork() system call is used to create processes. When a process (a program in execution) makes a fork() call, an exact copy of the process is created. Now there are two processes, one being the parent process and the other being the child process.
+</p>
+<p>
+	The process which called the fork() call is the parent process and the process which is created newly is called the child process. The child process will be exactly the same as the parent. Note that the process state of the parent i.e., the address space, variables, open files etc. is copied into the child process. This means that the parent and child processes have identical but physically different address spaces. The change of values in parent process doesn't affect the child and vice versa is true too.
+</p>
+<p>
+	Both processes start execution from the next line of code i.e., the line after the fork() call. Let's look at an example:
+</p>
+<pre>
+	// example.c
+	#include <stdio.h>
+	void main() 
+	{
+	    int val;  
+	    val = fork();   // line A
+	    printf("%d", val);  // line B
+	}
+</pre>
+<p>
+	When the above example code is executed, when line A is executed, a child process is created. Now both processes start execution from line B. To differentiate between the child process and the parent process, we need to look at the value returned by the fork() call.
+</p>
+<p>
+	The difference is that, in the parent process, fork() returns a value which represents the process ID of the child process. But in the child process, fork() returns the value 0.
+</p>
+<p>
+	This means that according to the above program, the output of parent process will be the process ID of the child process and the output of the child process will be 0.
+</p>
+
+<h3>Exec()</h3>
+<p>
+	The exec() system call is also used to create processes. But there is one big difference between fork() and exec() calls. The fork() call creates a new process while preserving the parent process. But, an exec() call replaces the address space, text segment, data segment etc. of the current process with the new process.
+</p>
+<p>
+	It means, after an exec() call, only the new process exists. The process which made the system call, wouldn't exist.
+</p>
+<p>
+	There are many flavors of exec() in UNIX, one being exec1() which is shown below as an example:
+</p>
+<pre>
+
+	// example2.c
+	#include <stdio.h>
+	void main() 
+	{
+	    execl("/bin/ls", "ls", 0);      // line A
+	    printf("This text won't be printed unless an error occurs in exec().");
+	}
+</pre>
+<p>
+	As shown above, the first parameter to the execl() function is the address of the program which needs to be executed, in this case, the address of the ls utility in UNIX. Then it is followed by the name of the program which is ls in this case and followed by optional arguments. Then the list should be terminated by a NULL pointer (0).
+</p>
+<p>
+	When the above example is executed, at line A, the ls program is called and executed and the current process is halted. Hence the printf() function is never called since the process has already been halted. The only exception to this is that, if the execl() function causes an error, then the printf() function is executed.
+</p>
+
+<h3>References</h3>
+<hr>
+<ol>
+	<li>
+		<a href="https://www.youtube.com/watch?v=z3Nw5o9dS7Q&list=PLsylUObW5M3CAGT6OdubyH6FztKfJCcFB">Lecture 1: Introduction to UNIX System Calls Part 1</a>
+	</li>
+	<li><a href="https://www.youtube.com/watch?v=PsUEyhpi7cA">Lecture 2: Introduction to UNIX System Calls Part 2</a></li>
+    <li>Operating System Concepts - by Silberschatz, Galvin, Gagne</li>
+</ol>
+<br>

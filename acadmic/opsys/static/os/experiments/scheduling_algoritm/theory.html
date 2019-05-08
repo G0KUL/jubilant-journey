@@ -1,0 +1,163 @@
+<h3>Theory</h3>
+<p>
+    Scheduling is the process of doing work in some order resulting better utilization of time and resources. CPU scheduling is used to maximize CPU utilization and reduce waiting time of processes. <!--Because accessing memory is very expensive task, CPU often waits for process to complete the memory cycle. So in such cases CPU time is unnecessarily wasted. -->
+</p>
+<p>
+    <h4>CPU Scheduler</h4>
+    <ul>
+    <li>CPU scheduler also called as short term scheduler is responsible for scheduling processes on CPU whenever CPU is idle. CPU scheduler selects next process from ready queue and assigns it to CPU.</li>
+    <li>The algorithm used to select next process from ready queue is not always a FIFO queue. There are several other algorithms available to choose from. We will see some of them in this experiment.</li>
+    </ul>
+    <h4>Dispatcher</h4>
+    <ul>
+    <li>Dispatcher is responsible for carrying out the context switching. Context switching is carried out during process switching.</li>
+    <li>Context switching activity involves saving the PCB of preempted process to memory if required and loading the PCB of next process to run on CPU</li>
+    </ul>
+</p>
+
+<p> <h4>Preemptive Scheduling</h4>
+    <ul>
+        <li>CPU scheduling decisions take place under one of four conditions:
+            <ol>
+                <li>Process switches from the running state to the waiting state, such as for an I/O request.</li>
+                <li>Process switches from the running state to the ready state, ex. in response to an interrupt.</li>
+                <li>Process switches from the waiting state to the ready state, say at completion of I/O.</li>
+                <li>Process finish its execution and terminates.</li>
+            </ol>
+        </li>
+        <li>In conditions 1 and 4 a new process must be selected.</li>
+        <li>For conditions 2 and 3 there is a choice - To either continue running the current process, or select a different one.</li>
+        <li> If scheduling takes place only under conditions 1 and 4, the system is said to be<strong> non-preemptive</strong>, or <strong>cooperative</strong>. Under these conditions, once a process starts running it keeps running, until it either voluntarily blocks or until it finishes. Otherwise the system is said to be <strong>preemptive.</strong></li>
+        <li>Preemptive scheduling can cause problems when two processes share data, because one process may get interrupted in the middle of updating shared data structures.</li>
+  </ul>
+</p>
+
+<p>
+    <h4>Terminologies used (Process times)</h4>
+    <ul>
+        <li>Arrival Time: Time at which process enters in ready queue</li>
+        <li>Waiting Time: How much time process waits in ready queue for its turn to get CPU</li>
+        <li><!--CPU--> Burst Time: Time required by a process to perform the calculations on CPU</li>
+        <!-- <li>IO burst time: Time required by a process to perform IO operation. ex. waiting for a data transfer in or out of system</li> -->
+        <li>Response Time: Time of submitting the request by the process to the time at which the initial results are generated </li>
+        <li>Turn Around Time: Time required for a particular process to complete, from submission time to completion.</li>
+        <li>Completion/Finish Time: Time at which process completes its execution</li>
+    </ul>
+</p>
+
+<p>
+    <h4>There are different types of CPU scheduling algorithms</h4>
+    <ul>
+        <li>First Come First Serve (FCFS))</li>
+        <li>Shortest Job First (SJF)</li>
+        <li>Shortest Remaining Time First</li>
+        <li>Round Robin Scheduling</li>
+        <li>Priority based scheduling</li>
+    </ul>
+</p>
+<h4>The Purpose of a Scheduling algorithm:</h4>
+        <ul>
+            <li>Maximum CPU utilization</li>
+            <li>Fare allocation of CPU</li>
+            <li>Maximum throughput</li>
+            <li>Minimum turnaround time</li>
+            <li>Minimum waiting time</li>
+            <li>Minimum response time</li>
+        </ul>
+ 
+<p>
+<h4>1. First Come First Serve(FCFS)</h4>
+<ul>
+    <li>FCFS is a simplest algorithm, depends only on the order in which processes arrives.</li>
+    <li>It is a non-preemptive based algorithm. </li>
+    <li>The process which comes first will be executed first</li>
+    ex.<br>
+    Process No. [p1,p2,p3,p4,p5,p6]<br>
+    Arrival Time: [0,0,1,2,2,1]<br>
+    Burst Time: [3,2,1,4,2,3]<br>
+    <strong>Output:</strong><br>
+    Execution order: [p1,p2,p3,p6,p4,p5]
+</ul>
+<h4>2. Shortest Job First (SJF</h4>
+<ul>
+    <li>Next process is selected based on process burst time</li>
+    <li>Process with the min burst time is executed first</li>
+    <li>If two processes with equal burst time are available then the process having small process id will executed next</li>
+    <li>It is a non-preemptive algorithm</li>
+    <li>Processes with large burst cycle may starve if many short burst time processes are arriving continuously in the ready queue.</li>
+    
+    ex.<br>
+    Process No. : [p1, p2, p3, p4, p5, p6, p7]<br>
+    Arrival Time: [0, 1, 2, 2, 3, 4, 4]<br>
+    Burst Time: [2, 3, 2, 4, 1, 2, 1]<br>
+    <strong>Output:<br></strong>
+    Execution Sequence: [p1, p3, p5, p7, p6, p2, p7]
+</ul>
+<h4>3. Shortest Remaining Time First</h4>
+<ul>
+    <li>It is a SJF with preemption. If a process with shorter burst time arrives in ready queue then the currently running process will be preempted and the process with shorter burst time will be scheduled on the CPU.</li>
+    <li>preemption of running process is based on arrival of strictly shorter process.</li>
+    ex. <br>Process #: [p1, p2, p3, p4, p5, p6]<br>
+    Arrival Time: [7, 4, 9, 3, 8, 5]<br>
+    Burst Time: [1, 6, 2, 8, 1, 4] <br>
+    <strong>Output:</strong><br>
+    Execution order (process number, from time, to time) :<br> [(idle,0,3), (p4,3,4), (p2,4,5), (p6,5,7),(p1,7,8), (p5,8,9), (p3,9,11), (p6,11,13), (p2,13,18), (p4,18,25)]
+    <br>Check the simulation for the better demonstration of this example.
+</ul>
+<br>
+<p>
+    <ul>
+        <li>SJF/SRTF gives max throughput and it gives better performance compare to other scheduling algorithms</li>
+        <li>Drawback of this technique is it can lead to a starvation to the longer processes.</li>
+        <li>This is a practically non-implementable scheduling as system cannot know the amount of time required by process for execution.</li>
+        <li>Used as benchmark to measure the performance of other algorithms</li>
+    </ul>
+</p>
+
+<h4>4. Round Robin Scheduling</h4>
+<ul>
+    <li>A preemptive scheduling algorithm for time sharing systems.</li>
+
+    <li>Next process is selected based on the arrival time of process. Process at the front of the ready queue is allocated the CPU for at most one quantum</li>
+    <li>Quantum is fixed unit of time and its value can be like 10 ms or 50 ms</li>
+    <li>When the time has elapsed, the process is preempted and appended to the ready queue</li>
+    <li>It gives fair chance to every process ex. given n processes in the ready queue and time quantum q, each process gets q time of the CPU</li>
+    <li>No process waits for more than (n-1)q time units before getting CPU access where n is the number of processes.</li>
+</ul>
+
+<h4>5. Priority Based scheduling</h4>
+<ul>
+    <li>Every process is associated with its priority</li>
+    <li>Priority is a integer number and priority can be computed based on process type, size, # resources required, etc.</li>
+    <li>Here we will consider priority between 0 to 9 where 0 being highest priority and 9 is the lowest priority.</li>
+    <li>Process with the highest priority gets scheduled first.</li>
+    <li>It can be preemptive based or non-preemption based.</li>
+    <li>Priority scheduling can suffer from a major problem known as indefinite blocking, or starvation, in which a low-priority process can wait forever because there are always some other jobs around that have higher priority.</li>
+    <li>Solution to this problem is <strong>aging/dynamic priority</strong>, in which priorities of jobs increase the longer they wait. Under this scheme a low-priority job will eventually get its priority raised high enough that it gets run.</li>
+    <li>
+        Priorities can of two types
+        <ul>
+            <li>Static Priority: In overall lifetime priority of process will not change ie. once the priority is computed then it will never change </li>
+            <li>Dynamic Priority: Priority of process increases on timely interval called <strong>aging</strong>.</li>
+        </ul>
+    </li>
+    ex. <br>
+    Process No. : [p1,p2,p3,p4,p5] <br>
+
+    Burst Time : [10,1,2,1,5] <br>
+    Priority : [3,1,4,5,2]<br>
+    Consider that all processes arrived at same time then execution order will be : 
+    [p2,p5,p1,p3,p4]
+
+</ul>
+</p>
+
+<h4>References</h4>
+<hr>
+<ol>
+    <li><a href="https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/5_CPU_Scheduling.html">https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/5_CPU_Scheduling.html</a>
+    </li>
+    <li><a href="https://www.youtube.com/watch?v=w6HBW3-3wHU&list=PLsylUObW5M3CAGT6OdubyH6FztKfJCcFB&index=37">Lecture 37: Scheduling Policies</a></li>
+    <li>Operating System Concepts - by Silberschatz, Galvin, Gagne</li>
+</ol>
+<br>

@@ -1,0 +1,31 @@
+1. Interrupt
+
+Simulation not looks like lab.. experiment looks like study of interrupt.
+all other pages are empty
+
+2. Producer Consumer Problem
+
+simiulation is just demonstration of producer consumer problem.. Nohting like lab.
+other things are empty.
+
+3. Round robin and scheduling algorithms have everything same except their simulation.
+simulation is very good..
+
+4. system call
+only simulation available in the form of demonstration.
+
+5. forking
+simulation avaialble.. only static..
+nothing else.
+
+6. deadlock
+simulation is the demo of dining philosopher problem..
+other things are updated by me.
+
+7. bankers algo..
+issues with simulation..
+theory part is identical to deadlock theory..
+
+8. page replacement..
+need to verify..
+simulation is good.

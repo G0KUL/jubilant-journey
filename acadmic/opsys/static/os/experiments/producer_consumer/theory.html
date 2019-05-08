@@ -1,0 +1,134 @@
+<h3>Theory</h3>
+
+Producer consumer problem is a classic example of process synchronization problem.
+<br><br>
+Problem is as follows:<br>
+There are two processes, one is producer process, simply called as producer and another is consumer process called as consumer. Producer and consumer share common buffer used as Queue. Following is the demonstration of working of producer and consumer.<br>
+<p>
+Pseudo code for producer problem<br>
+<pre>
+	#define N 100
+	int buffer[N], count = 0;
+	void producer(void)
+	{
+		int itemp, in=0;
+		while(1)
+		{
+			itemp = produce_item();
+			while(count ==  N); //busy waiting
+			buffer[in] = itemp;
+			in = (in + 1) % N;
+			count ++;
+		}
+	}
+</pre>
+
+Pseudo code for consumer problem <br>
+<pre>
+	void consumer(void)
+	{
+		int itemc, out = 0;
+		while(1)
+		{
+			while(count == 0); //busy waiting
+			itemc = buffer[out];
+			out = (out + 1) % N;
+			count --;
+			process_item(itemc);
+		}
+	}
+
+</pre>
+</p>
+<p>
+	Is this code safe? and the answer is <storng>NO</storng>. This code will produce incorrect results.
+We will see how this code will cause the problem. <br>
+Producer and Consumer, both the processes are infinite that means they execute infinitely as their logic is written in while(1) loop where loop condition is always true. <br>
+In the producer procedure as well as in consumer procedure common variables are buffer and count. buffer is used to hold the data i.e. items produced by producer. Producer produces one item at time iff the buffer is not full and puts that item in a buffer. Whenever  producer puts item in buffer, it increments the value of count variable. Later consumer process consumes one item at time from buffer iff buffer is not empty and decrements count variable by 1. </p>
+
+<p>
+	<h4>Producer:</h4>
+	Producer produces one item at a time and stores it in <strong>itemp</strong>. Then it checks whether the buffer is full, if buffer is full then while loop will keep iterating until the value of count not becomes less than <strong>N</strong>. This type of waiting is called as busy waiting. In next step, the produced item is stored in buffer. Variable <strong>in</strong> is just a counter/position to put next item in buffer. Variable <strong>count</strong> is used to keep track the count of number of items present in the buffer.
+</p>
+<p>
+	<h4>Consumer:</h4>
+	Consumer first checks if there is any item present in the buffer, while loop checks if buffer is empty or not. If buffer is empty then keep waiting as while loop will not terminate unless <strong>count > 0</strong>. If buffer is not empty then consumer takes one item from the buffer, stores that item in variable <strong>itemc</strong> and decrements count by 1. At last consumer process/consumes the <strong>itemc.</strong>
+</p>
+<p>
+	So now the question is how this code will create a problem. The problem lies in the increment and decrement of the count variable. CPU cannot execute statement "count ++" as it is. Statement will be converted to the Assembly language (low level language) and then CPU executes the Assembly instructions one by one. <br>
+	count ++ after converting to assembly -
+	<pre>
+		e1. laod Rp, count
+		e2. Inc Rp
+		e3. Store count, Rp
+	</pre>
+	count -- in assembly will look like
+	<pre>
+		d1. load Rq, count
+		d2. Dec Rq
+		d3. Store count, Rq
+	</pre>
+	Where e1,e2,e3 and d1,d2,d3 are the steps and Rp and Rq are the CPU registers. <br>
+</p>
+<p>
+	Now consider the situation when value of count is 99 and producer is active. Producer will produce one item and check whether the buffer is full. As Buffer is not full and count is 99, there is one place empty in buffer. So producer will put one item in the buffer and continue its execution.</p>
+	<p>
+	 <strong>When producer executes count ++ instruction:</strong> (See the assembly code of count ++) Now say producer executes step e1, e2 and gets preempted. Note here that buffer is full, count value is 99, Rp became 100 and producer is preempted.  </p>
+	 <p>
+	Now consumer gets the CPU and starts it execution. It sees that value of count is 99 and so buffer is not empty. So consumer will consume the items from buffer and when buffer is empty it will wait for producer to produce the items. Once consumer consumers all the items, it will set count = 0. </p>
+	<p>
+	Now say consumer gets preempted and producer process continues its execution again. Producer executes next instruction which is step e3. Notice that Rp was loaded with 99 and INC instruction incremented value of Rp by one so Rp is 100. Step e3 will store value of register Rp in the count variable. Therefore count will become 100 and producer process will wait for consumer process to consume the item. Buffer has only one item but count is showing that buffer is full. This leads to incorrect results and data loss.
+</p>
+
+<p>Implementation of Producer Consumer problem using sleep and wakeup system call can cause deadlock. Following is the one solution to producer consumer problem using semaphore. Please read about semaphore before proceeding with below pseudo code.</p>
+<p>
+	<h4>Solution to the producer consumer problem using counting semaphore:</h4>
+	<pre>
+	//common data between producer and consumer.
+	#define N 100
+	int buffer[N]
+	CSEM EMPTY = N; 	//counting semaphore with counting up to 100
+	CSEM FULL = 0;		//another counting semaphore variable
+	BSEM mutex = 1;		//Binary semaphore
+
+	//code for producer
+	void producer()
+	{
+		int itemp, in = 0;
+		while(1)
+		{
+			itemp = produce_item();
+			down(EMPTY);
+			down(mutex);
+			buffer[in] = itemp;
+			in = (in + 1) % N;
+			up(mutex);
+			up(FULL);
+		}
+	}
+
+	//code for consumer
+	void consumer()
+	{
+		int itemc, out = 0;
+		while(1)
+		{
+			down(FULL);
+			down(mutex);
+			itemc = buffer[out];
+			out = (out + 1) % N;
+			up(mutex);
+			up(EMPTY);
+			consume_item(itemc);
+		}
+	}
+	</pre>
+	The above pseudo code will guarantee that the parallel execution of these processes will not cause any problem.
+</p>
+<h3>References</h3>
+<hr>
+<ol>
+    <li>Operating System Concepts - by Silberschatz, Galvin, Gagne</li>
+    <li><a href="https://www.youtube.com/watch?v=UjuVVj37wsE&list=PLsylUObW5M3CAGT6OdubyH6FztKfJCcFB&index=25">Lecture 25: Multiple producer-multiple consumer queue, Semaphore</a></li>
+</ol>
+<br>

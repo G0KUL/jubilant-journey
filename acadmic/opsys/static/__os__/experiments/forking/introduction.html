@@ -1,0 +1,9 @@
+<h3>Introduction</h3>
+System call fork() is a system call used by a parent process to create a child process. When a process is executing, it
+may need some other process to execute either along with it or to complete executing befor it can proceed. The process
+that is executing is the parent process and the process it creates is a child process. The naming is done so for the
+processes based on the creation ie. the process that created the new process is the parent process and the process that
+was created is called the child process. In short, fork creates a child process of which the calling function is a
+parent. The fork function is a special function as it returns not one but two values. Fork returns one value to the
+parent process and one value to the child process repectively. The parent gets the Process ID of the child from fork.
+The child gets value zero from fork.

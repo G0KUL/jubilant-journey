@@ -1,0 +1,137 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+</style>
+
+<h3>Simulation</h3>
+
+<button onclick="next()">Next</button>
+<div id="withcanvas">
+  <canvas id="mycanvas" width="500" height="400" style="border:1px solid #000000;"></canvas>
+</div>
+<br />
+<div id="mylog"></div>
+<script>
+  var i = 1;
+  var logs = [
+    "User process is executing",
+    "User process makes a system call",
+    "Trap<br/> The mode bit is set to 0. The execution starts in the kernal mode.",
+    "The system call from the user process is executed at this stage.",
+    "The system call execution was complete. The mode bit again set back to 1. The execution is returned to user mode.",
+    "The execution of the process is continued.",
+    "Simulation is complete."
+  ];
+  window.onload = function () {
+    requestAnimationFrame(display);
+  }
+
+  function next() {
+    if (i <= 8) i++;
+    requestAnimationFrame(display);
+  }
+
+  function display() {
+    var canvaspointer = document.getElementById("mycanvas").getContext("2d");
+    canvaspointer.clearRect(0, 0, 500, 400);
+    canvaspointer.font = "20px Arial";
+
+    //Dividing using line
+    canvaspointer.beginPath();
+    canvaspointer.moveTo(250, 0);
+    canvaspointer.lineTo(250, 400);
+    canvaspointer.stroke();
+
+    if (i > 1) {
+      //User Proccess execution
+      canvaspointer.beginPath();
+      canvaspointer.rect(15, 70, 220, 30);
+      canvaspointer.fillText("User Process Execution", 20, 90);
+      canvaspointer.stroke();
+    }
+
+    if (i > 2) {
+      //Line and arrow from User Proccess execution to Makes System Call
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(100, 100);
+      canvaspointer.lineTo(100, 140);
+      canvaspointer.moveTo(100, 140);
+      canvaspointer.lineTo(90, 130);
+      canvaspointer.lineTo(110, 130);
+      canvaspointer.lineTo(100, 140);
+      canvaspointer.fill();
+      canvaspointer.stroke();
+      //Makes System Call
+      canvaspointer.beginPath();
+      canvaspointer.rect(15, 140, 220, 30);
+      canvaspointer.fillText("Makes System Call", 20, 160);
+      canvaspointer.stroke();
+    }
+
+    if (i > 3) {
+      //Line from Makes System Calls to Execute System Call
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(100, 170);
+      canvaspointer.lineTo(100, 190);
+      canvaspointer.lineTo(380, 190);
+      canvaspointer.lineTo(380, 220);
+      canvaspointer.stroke();
+      //Arrow
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(380, 220);
+      canvaspointer.lineTo(370, 210);
+      canvaspointer.lineTo(390, 210);
+      canvaspointer.lineTo(380, 220);
+      canvaspointer.fill();
+      canvaspointer.fillText("Trap(Mode bit=0)", 260, 180);
+      canvaspointer.stroke();
+    }
+    if (i > 4) {
+      //Execute system call
+      canvaspointer.beginPath();
+      canvaspointer.rect(270, 220, 220, 30);
+      canvaspointer.fillText("Execute System Call", 275, 240);
+      canvaspointer.stroke();
+    }
+
+    if (i > 5) {
+      //Line from Execute System Call to Return from System Call
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(380, 250);
+      canvaspointer.lineTo(380, 270);
+      canvaspointer.lineTo(100, 270);
+      canvaspointer.lineTo(100, 310);
+      canvaspointer.stroke();
+      //Arrow
+      canvaspointer.beginPath();
+      canvaspointer.moveTo(100, 310);
+      canvaspointer.lineTo(90, 300);
+      canvaspointer.lineTo(110, 300);
+      canvaspointer.lineTo(100, 310);
+      canvaspointer.fill();
+      canvaspointer.fillText("Return(Mode bit=1)", 260, 290);
+      canvaspointer.stroke();
+    }
+    if (i > 6) {
+      //Return from system call
+      canvaspointer.beginPath();
+      canvaspointer.rect(15, 310, 225, 30);
+      canvaspointer.fillText("Return from System Call", 20, 330);
+      canvaspointer.stroke();
+    }
+
+    //Wordings
+    canvaspointer.fillText("User Process", 30, 30);
+    canvaspointer.fillText("Kernel", 280, 30);
+    canvaspointer.fillText("User Mode(mode bit=1)", 20, 380);
+    canvaspointer.fillText("Kernel Mode(mode bit=0)", 270, 380);
+
+    if (i > 1) {
+      $("#mylog").html(logs[i - 2]);
+    }
+  }
+</script>

@@ -1,0 +1,28 @@
+<h3>Theory</h3>
+The algoritm is as follows:<br /><br />
+We have the maximum, allocated given for each process in the set of processes.Now we need available. If the value is
+given then we can directly use it else we need to calculate it. To calculate the value we need to have the maximum
+instances of each resource that the system has. Then we need to subtract the maximum number of instances of a resource
+by the sum of all the instanaces of the resource in allocated of processes.<br /><br />
+Then we start with calculation of need. We calculate need for eac of the resource as :<br />Need = Maximum - Available<br />
+When we have completed the calculation of the need for each resource for each and every process, we start with the
+finding the safe sequence for execution of the process.<br /><br />
+To check whether a process can be executed selected from the set of unexecuted processes in the system we apply the
+following set
+of equations.
+<ol>
+    <li>Work = Available</li>
+    <li>Need &lt;= Work</li>
+    <li>Work = Work + Allocation</li>
+</ol>
+<br />
+We continue this with the processes in the set of processes as long as either of the two situations arises.
+<dl>
+    <dt>Case 1</dt>
+    <dd>All the processes have completed their execution.</dd>
+    <dt>Case 2</dt>
+    <dd>Need &gt; Available ; for all processes in the set of remaining processes</dd>
+</dl>
+<br />
+If the case is Case 1, then we get the safe sequence of execution but if the case is Case 2, then the system is not in
+safe state.

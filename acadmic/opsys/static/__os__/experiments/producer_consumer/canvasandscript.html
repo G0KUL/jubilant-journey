@@ -1,0 +1,117 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style>
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+</style>
+
+<h3>Simulation</h3>
+<button id="producer_produce" onclick="produceraction()">
+  Producer</button>
+<button id="consumer_consume" onclick="consumeraction()">
+  Consumer</button><br />
+<div>
+  <canvas id="mycanvas" width="500" height="400" style="border:1px solid #000000;"></canvas>
+</div>
+<div id='log'></div>
+<script>
+  var buffer, mylog, previous_state;
+
+  function produceraction() {
+    if (buffer.length === 5) {
+      if (!(previous_state === 1)) {
+        mylog.innerHTML = mylog.innerHTML + 'Buffer full. Cannot produce.<br/>';
+        previous_state = 1;
+      }
+    } else {
+      previous_state = 0;
+      var ch = Math.floor((Math.random() * 10) + 1);
+      buffer.unshift(ch);
+      mylog.innerHTML = mylog.innerHTML + ch + ' was added to the buffer<br/>';
+    }
+    window.requestAnimationFrame(display);
+  }
+
+  function consumeraction() {
+    if (buffer.length === 0) {
+      if (!(previous_state === 2)) {
+        mylog.innerHTML = mylog.innerHTML + 'Buffer empty. Cannot consume.<br/>';
+        previous_state = 2;
+      }
+    } else {
+      previous_state = 0;
+      var ch = buffer.pop();
+      mylog.innerHTML = mylog.innerHTML + ch + ' was removed from the buffer<br/>';
+    }
+    window.requestAnimationFrame(display);
+  }
+
+  window.onload = () => {
+    buffer = [];
+    previous_state = 0;
+    mylog = document.getElementById('log');
+    display();
+  }
+
+  function display() {
+    var canvaspointer = document.getElementById("mycanvas").getContext("2d");
+    canvaspointer.clearRect(0, 0, 500, 400);
+    canvaspointer.font = "20px Oxygen";
+
+    //Producer
+    canvaspointer.strokeRect(20, 20, 160, 40);
+    canvaspointer.fillText("Producer", 50, 50);
+
+    //Buffer
+    canvaspointer.strokeRect(100, 120, 280, 40);
+    canvaspointer.fillText("Buffer", 280, 110);
+
+    //Dividing Buffer
+    var divbuffer = 280 / 5;
+    for (var j = 0; j < 5; j++) {
+      canvaspointer.strokeRect(100 + j * divbuffer, 120, divbuffer, 40);
+      if (buffer[j] === undefined)
+        canvaspointer.fillText('*', 110 + j * divbuffer, 150);
+      else
+        canvaspointer.fillText(buffer[j], 110 + j * divbuffer, 150);
+    }
+
+    //Consumer
+    canvaspointer.strokeRect(300, 220, 160, 40);
+    canvaspointer.fillText("Consumer", 330, 250);
+
+    //line from Producer to Buffer
+    canvaspointer.beginPath();
+    canvaspointer.moveTo(40, 60);
+    canvaspointer.lineTo(40, 140);
+    canvaspointer.lineTo(100, 140);
+    canvaspointer.stroke();
+
+    //line from Buffer to Consumer
+    canvaspointer.beginPath();
+    canvaspointer.moveTo(380, 140);
+    canvaspointer.lineTo(400, 140);
+    canvaspointer.lineTo(400, 220);
+    canvaspointer.stroke();
+
+    //Drawing arrow from Producer to Buffer
+    canvaspointer.beginPath();
+    canvaspointer.moveTo(100, 140);
+    canvaspointer.lineTo(90, 150);
+    canvaspointer.lineTo(90, 130);
+    canvaspointer.lineTo(100, 140);
+    canvaspointer.fill();
+    canvaspointer.stroke();
+
+    //Drawing arrow from Buffer to Consumer
+    canvaspointer.beginPath();
+    canvaspointer.moveTo(400, 220);
+    canvaspointer.lineTo(390, 210);
+    canvaspointer.lineTo(410, 210);
+    canvaspointer.lineTo(400, 220);
+    canvaspointer.fill();
+    canvaspointer.stroke();
+  }
+</script>

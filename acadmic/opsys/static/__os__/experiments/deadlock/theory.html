@@ -1,0 +1,22 @@
+<h3>Theory</h3>
+Dinner Philosopher problem is an example that is normally considerd when considering about deadlock. The problem is
+about 5 philosophers. The 5 philosophers are seated around a circular table. Each of the philosopher is given with one
+chopstick. The mandatory condition is that philosophers can eat only if they has 2 chopstick. There are 3 states:
+<ol>
+    <li>Thinking</li>
+    <li>Hungry</li>
+    <li>Eating</li>
+</ol><br />
+Inicially all philosophers are thinking. When a philosopher is hungry then he will pick the chopsticks from his left
+and right of which one is his chopstick and other from neighbouring philosopher and starts eating. Now the philosopher
+whose chopstick was taken has to wait till he receives back his chopstick and also get chopstick from the other side
+before he starts eating. If all philosopher wants to eat at same time then all of them will have their chopstick and
+they will be waiting for the second chopstick. They will remain in that stae for ever. This is the deadlock beacuse no
+one can complete the task of having food and will be forever waiting to get second chopstick. Inorder to solve this
+problem semaphores (variable which is used to solve critical section problem) or monitors can be used.
+<h4>Solution to DeadLock in Dinner Philosopher problem</h4>
+<ol>
+    <li>Philosopher must pick chopstick only if both left and right chopstick are available.</li>
+    <li>Only make four Philosophers to sit in circular table such that there will be one chopstick left on table. In
+        this way deadlock can be avoided.</li>
+</ol>

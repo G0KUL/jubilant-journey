@@ -1,0 +1,302 @@
+<link link href="https://fonts.googleapis.com/css?family=Oxygen" rel="stylesheet" />
+<style> 
+  body {
+    font-family: "Oxygen", sans-serif;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td {
+    width: 5%;
+    text-align: center;
+  }
+</style>
+
+<h3>Simulation</h3>
+  <div>
+    <div id="divinputdata">
+      <p> This simulation will work for exactly 4 processes(P1,P2,P3,P4) and 3 types of resources(R1,R2,R3). <br>
+      Enter input data below and click on submit  to save details. </p>
+      <div id="takeinput">
+        
+      </div>
+    </div>
+    <div id="divsimulationdata" style="display: none;">
+    <table border=1>
+      <tr>
+        <th rowspan="2">Process</th>
+        <th colspan="3">Allocation</th>
+        <th colspan="3">Max</th>
+        <th colspan="3">Available</th>
+        <th colspan="3">Need</th>
+      </tr>
+      <!-- Row for each process-->
+      <tr id="row0"></tr>
+      <tr id="row1"></tr>
+      <tr id="row2"></tr>
+      <tr id="row3"></tr>
+      <tr id="row4"></tr>
+    </table>
+    </div>
+  </div>
+<br>
+<div style="display: none;" id="divbutton">
+  <button id="nextInput" onclick="nextaction()">Next</button>
+</div>
+
+<div id='display_log' style="height:300px; overflow:scroll;">
+  
+</div>
+
+<script>
+  var resource = ["R1", "R2", "R3"];
+  // Operation performing variable
+  var control = 0;
+  var mylog = document.getElementById('display_log');
+  var inputdiv = document.getElementById('takeinput');
+  
+  // Initial allocation
+  var allocation = [[0, 1, 0], [2, 0, 0], [3, 0, 2], [2, 1, 1]];
+  // Maximum Requirement
+  var maxarray = [[7, 5, 3], [3, 2, 2], [9, 0, 2], [2, 2, 2]];
+  // To store available after completion
+  var available = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+  // The need of each process
+  var need = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
+  // To store present avalable
+  var present_available = [3, 3, 2];
+  var k = 0, l = maxarray.length;
+  var unsafe_process = 0, prev_l = maxarray.length;
+  // Show initial calculation and fill the table
+  var count = 1;
+
+  /*------------------------------------modification-------------------------*/
+  var r = [0,0,0];
+  var n = [0,0,0];
+
+  function reset(){
+    count = 1;
+    document.getElementById('divsimulationdata').style.display = "none";
+    document.getElementById('divbutton').style.display = "none";
+    document.getElementById('display_log').style.display = "none";
+    document.getElementById('divinputdata').style.display = "block";
+
+    readyinput();
+  }
+
+  function getinput(){
+    for (var i = 1; i <= 3; i++) {
+      r[i] = document.getElementById('r'+i);
+      if(r[i].value == ""){
+        r[i].focus();
+        return;
+      }
+      allocation[count - 1][i - 1] = parseInt(r[i].value);
+      //console.log('R' + i + ' allocated: ' + r[i].value);
+      n[i] = document.getElementById('nr' + i);
+      if (n[i].value == "") {
+        n[i].focus();
+        return;
+      }
+      else if (n[i].value < r[i].value) {
+        n[i].focus();
+        document.getElementById('errormsg').innerHTML = "Value of Max R" + i 
+          + " >= allocated R" + i;
+        return;
+      }
+      maxarray[count - 1][i - 1] = parseInt(n[i].value);
+      //console.log('R' + i + ' need: ' + r[i].value);
+    }
+    count++;
+    if(count <= 4)
+      readyinput();
+    else if(count == 5){
+      inputdiv.innerHTML = 'Enter the details of Available resource: <br>'+
+        'R1:<input type="number" id="r1" value="0" min="0" onkeypress="return event.charCode >= 48" autofocus>'+ 
+        'R2:<input type="number" id="r2" value="0" min="0" onkeypress="return event.charCode >= 48">'+
+        'R3:<input type="number" id="r3" value="0" min="0" onkeypress="return event.charCode >= 48">'+
+        '<br><br><button id="submitinput" onclick="getavailable()">Submit</button> ';
+        document.getElementById('r1').focus();
+    }
+    console.log('count: ' + count);
+  }
+  function readyinput(){
+    inputdiv.innerHTML = '<h4>Enter data for process P'+count+': </h4>'+
+        'Enter allocated resources for process P'+count+':<br>'+
+        'R1:<input type="number" id="r1" value="0" min="0" onkeypress="return event.charCode >= 48" autofocus> '+ 
+        'R2:<input type="number" id="r2" value="0" min="0" onkeypress="return event.charCode >= 48">'+
+        'R3:<input type="number" id="r3" value="0" min="0" onkeypress="return event.charCode >= 48">'+
+        '<br> <br>Max resources required by process P'+count+':<br>'+
+        'R1:<input type="number" id="nr1" value="0" min="0" onkeypress="return event.charCode >= 48"> '+
+        'R2:<input type="number" id="nr2" value="0" min="0" onkeypress="return event.charCode >= 48"> '+
+        'R3:<input type="number" id="nr3" value="0" min="0" onkeypress="return event.charCode >= 48"><br>'+
+        '<div id="errormsg"> </div> <br>'+
+        '<button id="submitinput" onclick="getinput()">Submit</button> ';
+    document.getElementById('r1').focus();
+  }
+
+  function getavailable(){
+    console.log(allocation);
+    console.log(need);
+    for (var i = 1; i <= 3; i++) {
+      r[i] = document.getElementById('r'+i);
+      if(r[i].value == ""){
+        r[i].focus();
+        return;
+      }
+      present_available[i-1] = parseInt(r[i].value);
+    }
+    console.log(present_available);
+    document.getElementById('divinputdata').style.display = "none";
+    document.getElementById('divsimulationdata').style.display = "block";
+    document.getElementById('divbutton').style.display = "block";
+    initial();
+  }
+
+  window.onload = function () {
+    reset();
+    readyinput();
+  }
+
+  function initial(){
+    document.getElementById('display_log').style.display = "block";
+    mylog.innerHTML = 'Step 0 : <br/>The available resouces =  (' + present_available[0] + ', ' +
+      present_available[1] + ', ' + present_available[2] + ')<br/>';
+    display();
+  }
+  /*---------------------------------------------------------------------------------*/
+  var unsafe_process = 0;
+  var flag = false;
+  var prev_l = maxarray.length;
+  
+  function nextaction() {
+    if (control !== undefined)
+      mylog.innerHTML =
+        mylog.innerHTML + "<br/>Step " + (control + 1) + ": <br/>";
+    // Perform updation of need
+    if (control < need.length) {
+      //Updating need
+      for (var j = 0; j < resource.length; j++) {
+        need[control][j] = maxarray[control][j] - allocation[control][j];
+      }
+      mylog.innerHTML =
+        mylog.innerHTML +
+        "We have updated need of process " +
+        (control + 1) +
+        "<br/>" +
+        "The new need[" +
+        (control + 1) +
+        "] =  (" +
+        need[control][0] +
+        ", " +
+        need[control][1] +
+        ", " +
+        need[control][2] +
+        ")<br/>";
+      display();
+      control++;
+      // Perform which operation to be performed among the once which are not complete
+    } else if (control >= need.length) {
+      if (flag === true) {
+        mylog.innerHTML = mylog.innerHTML + "The system is not in safe state.";
+        l = 0;
+        flag = false;
+      } else if (l > 0) {
+        mylog.innerHTML =
+          mylog.innerHTML + "Considering process " + (k + 1) + " : <br/>";
+        if (available[k][0] === -1) {
+          if (checkvalue(present_available, need[k]) === true) {
+            for (var i = 0; i < present_available.length; i++) {
+              present_available[i] += allocation[k][i];
+              available[k][i] = present_available[i];
+            }
+            l--;
+            mylog.innerHTML =
+              mylog.innerHTML +
+              "The process was completed from allocating from the available resources.<br/>";
+            mylog.innerHTML =
+              mylog.innerHTML +
+              "The new available is (" +
+              present_available[0] +
+              ", " +
+              present_available[1] +
+              ", " +
+              present_available[2] +
+              ")<br/>";
+          } else {
+            mylog.innerHTML =
+              mylog.innerHTML +
+              "The need is greater then the available resources and hence the resouces cannot be allocated to process<br/>";
+            mylog.innerHTML =
+              mylog.innerHTML +
+              "The available remains at (" +
+              present_available[0] +
+              ", " +
+              present_available[1] +
+              ", " +
+              present_available[2] +
+              ")<br/>";
+            unsafe_process = unsafe_process + 1;
+          }
+        } else {
+          mylog.innerHTML =
+            mylog.innerHTML + "The process has already been completed.<br/>";
+        }
+        if (unsafe_process === prev_l) flag = true;
+        if (k + 1 === maxarray.length) {
+          unsafe_process = 0;
+          prev_l = l;
+        }
+        k = (k + 1) % maxarray.length;
+        display();
+        control++;
+      } else {
+        control = undefined;
+        mylog.innerHTML =
+          mylog.innerHTML + "Completed with the execution of algorithm";
+      }
+    }
+  }
+
+  // Function to display current value of the array onto the table
+  function display() {
+    var text = "";
+    for (var i = 0; i < resource.length * 4; i++) {
+      text += "<th>" + resource[i % resource.length] + "</th>";
+    }
+    document.getElementById("row0").innerHTML = text;
+    for (var j = 0; j < 4; j++) {
+      text = "<td>P" + (j + 1) + "</td>";
+      for (var i = 0; i < resource.length * 4; i++) {
+        if (i < resource.length) {
+          text += "<td>" + allocation[j][i % resource.length] + "</td>";
+        } 
+        else if (i < resource.length * 2) {
+          text += "<td>" + maxarray[j][i % resource.length] + "</td>";
+        } 
+        else if (i < resource.length * 3) {
+          if (available[j][i % resource.length] === -1) 
+            text += "<td>-</td>";
+          else 
+            text += "<td>" + available[j][i % resource.length] + "</td>";
+        } 
+        else if (i < resource.length * 4) {
+          if (need[j][i % resource.length] === -1) 
+            text += "<td>-</td>";
+          else 
+            text += "<td>" + need[j][i % resource.length] + "</td>";
+        }
+      }
+      document.getElementById("row" + (j + 1)).innerHTML = text;
+    }
+  }
+
+  // Function to check if available is greater than need
+  function checkvalue(temp_available, temp_need) {
+    for (var i = 0; i < temp_available.length; i++)
+      if (temp_available[i] < temp_need[i]) return false;
+    return true;
+  }
+</script>
