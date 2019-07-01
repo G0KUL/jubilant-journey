@@ -1,0 +1,24 @@
+#set xrange [0:30]
+set terminal pngcairo enhanced color lw 1 size 1000, 700 font 'Arial-Bold'
+set output "udp_ping_latency.png"
+
+#set xlabel "Time ()" font ",18"
+set ylabel "Ping Latency (milisecs, logscale)" font ",18"
+set key vertical maxrows 1
+set style fill solid 0.25 
+set style boxplot nooutliers pointtype 7
+set style data boxplot
+
+set xtics ("100 Mbps" 2, "1000 Mbps" 6)
+set xtics nomirror
+set ytics nomirror
+set title 'Ping Latency comparison for UDP'
+#set logscale y 2
+set yrange [-500:]
+	 
+plot "fdemu_100.plotme" using (1):2 lc rgb 'red' title "FdEmu",\
+	 "netmap_100.plotme" using (2):1 lc rgb 'green' title "Netmap", \
+	 "dpdk_100.plotme" using (3):2 lc rgb 'blue' title "Dpdk", \
+	 "dpdk_1000.plotme" using (5):2 lc rgb 'blue' notitle, \
+	 "netmap_1000.plotme" using (6):1 lc rgb 'green' notitle,\
+	 "fdemu_1000.plotme" using (7):2 lc rgb 'red' notitle 

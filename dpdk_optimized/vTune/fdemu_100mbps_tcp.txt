@@ -1,0 +1,17 @@
+Effective CPU Utilization Histogram
+    Simultaneously Utilized Logical CPUs	Elapsed Time	Utilization threshold
+    0	21.827378019	Idle
+    1	89.18191272	Poor
+    2	0.0319870128	Poor
+    3	0	Poor
+    4	0	Poor
+    5	0	Poor
+    6	0	Poor
+    7	0	Ok
+    8	0	Ideal
+
+
+
+Effective Physical Core Utilization:	13.4% (0.535 out of 4)
+    Effective Logical Core Utilization:	6.8% (0.544 out of 8)
+
